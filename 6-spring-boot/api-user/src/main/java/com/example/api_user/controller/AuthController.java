@@ -4,6 +4,7 @@ package com.example.api_user.controller;
 // Importações necessárias para manipulação de autenticação e JWT (Json Web Token)
 import ch.qos.logback.core.net.SMTPAppenderBase;
 import com.example.api_user.dto.LoginDTO;
+import com.example.api_user.security.CustomUserDetails;
 import com.example.api_user.security.JwtTokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,8 +55,12 @@ public class AuthController {
             // O método `getPrincipal()` retorna o objeto principal da autenticação, que no caso é um `UserDetails` (detalhes do usuário autenticado).
             UserDetails user = (UserDetails) authentication.getPrincipal();
 
+            // Supondo que o UserDetails que você está usando possui um método para obter o ID do usuário.
+            // Se você estiver usando um UserDetails customizado, pode ser algo como:
+            Long userId = ((CustomUserDetails) user).getId(); // Certifique-se de que CustomUserDetails tem um método getId()
+
             // O JwtTokenProvider gera um token JWT usando as informações do usuário autenticado.
-            return jwtTokenProvider.generateToken(user);
+            return jwtTokenProvider.generateToken(user, userId);
 
         } catch (AuthenticationException error) {
             // Se houver uma exceção de autenticação, significa que as credenciais são inválidas.

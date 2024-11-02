@@ -40,7 +40,7 @@ public class UserService {
 
     // Método para obter um usuário por ID
     // - Busca o usuário no banco de dados pelo ID. Se o usuário for encontrado, ele é convertido para `UserDTO`, caso contrário, retorna null.
-    public UserDTO getUserById(int id) {
+    public UserDTO getUserById(Integer id) { // Mudança de int para Integer
         Optional<User> user = userRepository.findById(id); // Usa `Optional` para evitar null pointers.
         return user.map(this::convertToDTO).orElse(null); // Se o usuário estiver presente, converte para `UserDTO`, caso contrário, retorna null.
     }
@@ -66,7 +66,7 @@ public class UserService {
 
     // Método para atualizar um usuário existente
     // - Recebe o ID do usuário e os dados atualizados em um `UserDTO`. Atualiza o usuário no banco de dados se ele for encontrado.
-    public UserDTO updateUser(int id, UserDTO userDTO) {
+    public UserDTO updateUser(Integer id, UserDTO userDTO) {
         // Busca o usuário pelo ID.
         Optional<User> userOptional = userRepository.findById(id);
 
@@ -93,7 +93,7 @@ public class UserService {
 
     // Método para deletar um usuário pelo ID
     // - Recebe o ID do usuário a ser deletado e o remove do banco de dados.
-    public void deleteUser(int id) {
+    public void deleteUser(Integer id) {
         userRepository.deleteById(id); // Remove o usuário do banco de dados usando seu ID.
     }
 

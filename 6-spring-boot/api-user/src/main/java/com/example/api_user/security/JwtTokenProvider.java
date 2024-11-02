@@ -31,6 +31,11 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    // Método para extrair o ID do usuário
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> Long.parseLong(claims.get("id").toString()));
+    }
+
     // Método para extrair o nome de usuário (subject) do token JWT.
     // Utiliza o método extractClaim para pegar a "claim" que contém o subject (nome de usuário).
     public String extractUsername(String token) {
@@ -54,10 +59,10 @@ public class JwtTokenProvider {
 
     // Método para gerar um novo token JWT com base nos detalhes do usuário.
     // Recebe o objeto UserDetails e cria o token usando o nome de usuário como "subject".
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, Long userId) {
         // Cria um mapa vazio para claims (pode ser usado para adicionar informações adicionais ao token).
         Map<String, Object> claims = new HashMap<>();
-
+        claims.put("id", userId); // Adiciona o ID ao token
         // Chama o método createToken para gerar o token JWT, passando as claims e o nome de usuário.
         return createToken(claims, userDetails.getUsername());
     }
@@ -85,6 +90,7 @@ public class JwtTokenProvider {
     // Compara o nome de usuário extraído do token com o nome de usuário do UserDetails e verifica se o token não expirou.
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
+        final Long userId = extractUserId(token); // Extraindo o ID do token
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token)); // Verifica se o token não expirou e se o usuário é o correto
     }
 
